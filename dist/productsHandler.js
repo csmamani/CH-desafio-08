@@ -13,15 +13,16 @@ var productsHandler = /** @class */ (function () {
         var _this = this;
         this.getProducts = function (req, res) {
             if (!_this.productos || !_this.productos.length) {
-                res.json({ error: 'No hay productos cargados' });
+                res.status(400).json({ error: 'No hay productos cargados' });
             }
-            else {
-                res.json(_this.productos);
-            }
+            res.json(_this.productos);
         };
         this.getOneProduct = function (req, res) {
             var id = req.params.id;
             var producto = _this.productos.find(function (prod) { return prod.id === parseInt(id); });
+            if (!producto) {
+                res.status(404).json({ error: 'Producto no encontrado' });
+            }
             res.json(producto);
         };
         this.addProduct = function (req, res) {
@@ -33,7 +34,7 @@ var productsHandler = /** @class */ (function () {
                 thumbnail: thumbnail,
             };
             _this.productos = __spreadArrays(_this.productos, [newProduct]);
-            res.sendStatus(201);
+            res.status(201).json({ 'Producto creado': newProduct });
         };
         this.productos = [];
     }

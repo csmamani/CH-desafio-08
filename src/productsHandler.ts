@@ -16,16 +16,19 @@ class productsHandler {
 
   getProducts = (req: Request, res: Response) => {
     if (!this.productos || !this.productos.length) {
-      res.json({ error: 'No hay productos cargados' });
-    } else {
-      res.json(this.productos);
+      res.status(400).json({ error: 'No hay productos cargados' });
     }
+
+    res.json(this.productos);
   };
 
   getOneProduct = (req: Request, res: Response) => {
     const id = req.params.id;
-
     const producto = this.productos.find((prod) => prod.id === parseInt(id));
+
+    if (!producto) {
+      res.status(404).json({ error: 'Producto no encontrado' });
+    }
 
     res.json(producto);
   };
@@ -42,7 +45,7 @@ class productsHandler {
 
     this.productos = [...this.productos, newProduct];
 
-    res.sendStatus(201);
+    res.status(201).json({ 'Producto creado': newProduct });
   };
 }
 
